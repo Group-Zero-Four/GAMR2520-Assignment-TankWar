@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ZeroFour.StateMachine;
 
 namespace ZeroFour
 {
@@ -12,39 +14,29 @@ namespace ZeroFour
         public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();
 
-        public enum State
-        {
-            search,
-            chase,
-            attack,
-            retreat
-        }
-        public State currentState;
-
+        Dictionary<Type, BaseState> stateDict;
+        
         public override void AITankStart()
         {
-            currentState = State.search;
+            InitialiseStateMachine();
         }
         public override void AITankUpdate()
         {
-            switch (currentState)
-            {
-                case State.search:
-                    break;
-                case State.chase:
-                    break;
-                case State.attack:
-                    break;
-                case State.retreat:
-                    break;
-                default:
-                    break;
-            }
+            
         }
         public override void AIOnCollisionEnter(Collision collision)
         {
 
         }
         
+        void InitialiseStateMachine()
+        {
+            stateDict = new()
+            {
+                { typeof(WanderState), new WanderState() },
+                { typeof(ChaseState), new ChaseState() },
+                { typeof(AttackState), new AttackState() },
+            };
+        }
     }
 }
