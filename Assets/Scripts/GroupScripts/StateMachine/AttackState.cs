@@ -14,12 +14,24 @@ namespace ZeroFour.StateMachine
 
         public override void ExitState()
         {
-            Debug.Log($"Entered State on {currentTank.gameObject.name}");
+
+        }
+
+        public override bool StateNeedsToChange()
+        {
+            return false;
         }
 
         public override void UpdateState()
         {
+            //Hardscope the enemy!
+            GameObject enemyFound = currentTank.GetClosestEnemy();
 
+            if (enemyFound != null)
+            {
+                currentTank.AimTurretAtPoint(enemyFound);
+                currentTank.targetPoint.transform.position = enemyFound.transform.position;
+            }
         }
     }
 }

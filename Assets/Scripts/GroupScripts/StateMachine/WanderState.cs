@@ -6,6 +6,10 @@ namespace ZeroFour.StateMachine
 {
     public class WanderState : BaseState
     {
+        //minimum and maximum random move distance
+        //minimum and maximum times between finding new place to move to
+        //is the tank moving to the target point?
+        //distance from the target point to start using random points again.
         public override void EnterState(CleverTank tank)
         {
             currentTank = tank;
@@ -17,9 +21,16 @@ namespace ZeroFour.StateMachine
             Debug.Log($"Exited State");
         }
 
+        public override bool StateNeedsToChange()
+        {
+            //if enemies are found or health/fuel is low, return true
+            return false;
+        }
+
         public override void UpdateState()
         {
-
+            //Check for consumables, enemies or bases,
+            //Move to target point if investigating or random point if not
         }
     }
 }

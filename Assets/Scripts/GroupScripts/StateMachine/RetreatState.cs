@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace ZeroFour.StateMachine
 {
-    public class ChaseState : BaseState
+    public class RetreatState : BaseState
     {
+
         public override void EnterState(CleverTank tank)
         {
             currentTank = tank;
@@ -15,6 +16,11 @@ namespace ZeroFour.StateMachine
         public override void ExitState()
         {
 
+        }
+
+        public override bool StateNeedsToChange()
+        {
+            return false;
         }
 
         public override void UpdateState()
