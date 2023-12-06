@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using ZeroFour.StateMachine;
 
 namespace ZeroFour
@@ -38,13 +40,45 @@ namespace ZeroFour
         {
             InitialiseStateMachine();
         }
+
+        GameObject FindClosest(Dictionary<GameObject, float> targets)
+        {
+            float dist = -1;
+            GameObject closest = null;
+            foreach (var item in targets)
+            {
+                if(dist == -1)
+                {
+                    closest = item.Key;
+                    dist = item.Value;
+                }
+
+                if(item.Value <  dist)
+                {
+                    closest = item.Key;
+                    dist = item.Value;
+                }
+            }
+            return closest;
+        }
+
         public override void AITankUpdate()
         {
+            //Populate found objects
+            enemyTanksFound = TanksFound;
+            enemyBasesFound = BasesFound;
+            consumablesFound = ConsumablesFound;
+
+            closestEnemyBase = FindClosest(enemyBasesFound);
+            closestEnemy = FindClosest(enemyTanksFound);
+            closestCollectible = FindClosest(consumablesFound);
+
             if (currentState != null)
             {
                 currentState.UpdateState();
-                SwitchState();
             }
+            SwitchState();
+
         }
         public override void AIOnCollisionEnter(Collision collision)
         {
@@ -59,25 +93,37 @@ namespace ZeroFour
                 { typeof(RetreatState), new RetreatState() },
                 { typeof(AttackState), new AttackState() },
             };
+
+            currentState = stateDict.First().Value;
         }
         void SwitchState()
         {
             //Evaluate conditions and then select the appropriate state
             //Prioritise attacking if health is above low health threshold
-            if(GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
+            if (GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
             {
+                currentState.ExitState();
                 currentState = stateDict[typeof(RetreatState)];
+                currentState.EnterState(this);
                 return;
             }
 
-
-            if(closestEnemy || closestEnemyBase)
+            if (closestEnemy || closestEnemyBase)
             {
+                currentState.ExitState();
                 currentState = stateDict[typeof(AttackState)];
+                currentState.EnterState(this);
                 return;
             }
 
+            if (currentState is not WanderState)
+            {
+                currentState.ExitState();
+                currentState = stateDict[typeof(WanderState)];
+                currentState.EnterState(this);
+            }
         }
+
         #region Proxy Methods
         public void AimTurretAtPoint(GameObject point)
         {
