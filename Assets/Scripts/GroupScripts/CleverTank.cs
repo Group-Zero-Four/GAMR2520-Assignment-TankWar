@@ -145,6 +145,18 @@ namespace ZeroFour
         {
             GenerateRandomPoint();
         }
+        public float GetHealth()
+        {
+            return GetHealthLevel;
+        }
+        public float GetAmmo()
+        {
+            return GetAmmoLevel;
+        }
+        public float GetFuel()
+        {
+            return GetFuelLevel;
+        }
         #endregion Proxy Methods
     }
 }

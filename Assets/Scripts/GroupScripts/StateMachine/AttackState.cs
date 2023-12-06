@@ -13,6 +13,8 @@ namespace ZeroFour.StateMachine
         bool circling = false;
         float currentCircleAngle = 0;
         float circleRotateSpeed = 10, circlingNormalisedMoveSpeed = 0.5f;
+        float attackInterval;
+        Vector3 circlePosition;
         public override void EnterState(CleverTank tank)
         {
             currentTank = tank;
@@ -45,8 +47,20 @@ namespace ZeroFour.StateMachine
                 currentTank.driveTarget.transform.position = enemyFound.transform.position;
                 currentTank.aimTarget.transform.position = enemyFound.transform.position;
 
-
+                if (Vector3.Distance(enemyFound.transform.position, currentTank.transform.position) <= currentCircleRadius)
+                {
+                    CircleTarget(enemyFound);
+                }
             }
+            enemyFound = null;
+        }
+
+        void CircleTarget(GameObject enemy)
+        {
+            circlePosition = Quaternion.Euler(0, currentCircleAngle, 0) * (Vector3.forward * currentCircleRadius)
+                + enemy.transform.position;
+            currentCircleAngle += Time.deltaTime * circleRotateSpeed;
+            currentTank.driveTarget.transform.position = circlePosition;
         }
     }
 }
