@@ -94,7 +94,7 @@ namespace ZeroFour
                 { typeof(AttackState), new AttackState() },
             };
 
-            currentState = stateDict.First().Value;
+            SwitchState();
         }
         void SwitchState()
         {

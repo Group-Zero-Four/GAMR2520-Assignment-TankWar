@@ -15,6 +15,8 @@ namespace ZeroFour.StateMachine
         {
             currentTank = tank;
             Debug.Log($"Entered State on {tank.gameObject.name}");
+            currentTank.MoveTankRandom(0.5f);
+
         }
 
         public override void ExitState()
