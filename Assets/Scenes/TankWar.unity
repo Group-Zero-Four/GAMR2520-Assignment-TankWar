@@ -79852,7 +79852,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a266b039104d2f0448ef045ed7b1c628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetPoint: {fileID: 0}
+  investigating: 0
+  driveTarget: {fileID: 1823379362}
+  aimTarget: {fileID: 738215929}
+  investigationTime: 5
   closestEnemy: {fileID: 0}
   closestEnemyBase: {fileID: 0}
   closestCollectible: {fileID: 0}
