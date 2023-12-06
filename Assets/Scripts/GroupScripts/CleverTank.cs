@@ -17,8 +17,8 @@ namespace ZeroFour
         public GameObject driveTarget, aimTarget;
         [SerializeField] protected GameObject closestEnemy, closestEnemyBase, closestCollectible;
 
-        [SerializeField, Tooltip("Prioritise at X, Deprioritise at Y")] Vector2 lowHealthThreshold, lowFuelThreshold;
-        [SerializeField, Tooltip("Prioritise at X, Deprioritise at Y")] Vector2 ammoThreshold;
+        [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 lowHealthThreshold, lowFuelThreshold;
+        [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 ammoThreshold;
         public GameObject GetClosestEnemy()
         {
             return closestEnemy;
@@ -67,6 +67,7 @@ namespace ZeroFour
             if(GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
             {
                 currentState = stateDict[typeof(RetreatState)];
+                return;
             }
 
 
@@ -81,6 +82,18 @@ namespace ZeroFour
         public void AimTurretAtPoint(GameObject point)
         {
             FaceTurretToPoint(point);
+        }
+        public void MoveTankToPoint(GameObject point, float normalisedSpeed)
+        {
+            FollowPathToPoint(point, normalisedSpeed);
+        }
+        public void MoveTankRandom(float normalisedSpeed)
+        {
+            FollowPathToRandomPoint(normalisedSpeed);
+        }
+        public void FireAtSomething(GameObject point)
+        {
+            FireAtPoint(point);
         }
         #endregion Proxy Methods
     }
