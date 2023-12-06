@@ -102,17 +102,23 @@ namespace ZeroFour
             //Prioritise attacking if health is above low health threshold
             if (GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
             {
-                currentState?.ExitState();
-                currentState = stateDict[typeof(RetreatState)];
-                currentState?.EnterState(this);
+                if (currentState is not RetreatState)
+                {
+                    currentState?.ExitState();
+                    currentState = stateDict[typeof(RetreatState)];
+                    currentState?.EnterState(this);
+                }
                 return;
             }
 
             if (closestEnemy || closestEnemyBase)
             {
-                currentState?.ExitState();
-                currentState = stateDict[typeof(AttackState)];
-                currentState?.EnterState(this);
+                if (currentState is not AttackState)
+                {
+                    currentState?.ExitState();
+                    currentState = stateDict[typeof(AttackState)];
+                    currentState?.EnterState(this);
+                }
                 return;
             }
 
@@ -158,5 +164,11 @@ namespace ZeroFour
             return GetFuelLevel;
         }
         #endregion Proxy Methods
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawWireSphere(driveTarget.transform.position, 1);
+            Gizmos.DrawWireSphere(aimTarget.transform.position, 1);
+        }
     }
 }
