@@ -7,6 +7,12 @@ namespace ZeroFour.StateMachine
 {
     public class WanderState : BaseState
     {
+
+        public override string ToString()
+        {
+            return "Wander State";
+        }
+
         float timer = 10; //timer variable
         //minimum and maximum random move distance
         //minimum and maximum times between finding new place to move to

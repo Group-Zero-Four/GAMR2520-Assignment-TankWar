@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace ZeroFour.StateMachine
@@ -8,6 +7,13 @@ namespace ZeroFour.StateMachine
     public class RetreatState : BaseState
     {
 
+        float timer = 10;
+
+
+        public override string ToString()
+        {
+            return "Retreat State";
+        }
         public override void EnterState(CleverTank tank)
         {
             currentTank = tank;
@@ -21,6 +27,7 @@ namespace ZeroFour.StateMachine
             //AttackState
             //if health and fuel are above critical AND enemy is NOT in view
             //Wander
+            
         }
 
 
@@ -28,17 +35,30 @@ namespace ZeroFour.StateMachine
         {
             GameObject collectibleFound = currentTank.GetClosestCollectible();
 
-            if (collectibleFound.tag == "Health" && currentTank.GetHealth() != 125 )
+            if (collectibleFound != null)
             {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                if (collectibleFound.tag == "Health" && currentTank.GetHealth() != 125)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
+                if (collectibleFound.tag == "Fuel" && currentTank.GetFuel() != 125)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
+                if (collectibleFound.tag == "Ammo" && currentTank.GetAmmo() != 15)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
             }
-            if (collectibleFound.tag == "Fuel" && currentTank.GetFuel() != 125)
+            else
             {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
-            }
-            if (collectibleFound.tag == "Ammo" && currentTank.GetAmmo() != 15)
-            {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                timer -= Time.deltaTime;
+                currentTank.MoveTankRandom(0.3f);
+                if (timer <= 0)
+                {
+                    timer = 10;
+                    currentTank.RandomPointPlease();
+                }
             }
         }
     }

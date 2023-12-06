@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,6 +22,8 @@ namespace ZeroFour
 
         [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 lowHealthThreshold, lowFuelThreshold;
         [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 ammoThreshold;
+
+        [SerializeField] string statename;
         public GameObject GetClosestEnemy()
         {
             return closestEnemy;
@@ -78,7 +81,6 @@ namespace ZeroFour
                 currentState.UpdateState();
             }
             SwitchState();
-
         }
         public override void AIOnCollisionEnter(Collision collision)
         {
@@ -107,6 +109,7 @@ namespace ZeroFour
                     currentState?.ExitState();
                     currentState = stateDict[typeof(RetreatState)];
                     currentState?.EnterState(this);
+                    statename = "Retreat";
                 }
                 return;
             }
@@ -118,6 +121,7 @@ namespace ZeroFour
                     currentState?.ExitState();
                     currentState = stateDict[typeof(AttackState)];
                     currentState?.EnterState(this);
+                    statename = "Attack";
                 }
                 return;
             }
@@ -127,6 +131,7 @@ namespace ZeroFour
                 currentState?.ExitState();
                 currentState = stateDict[typeof(WanderState)];
                 currentState?.EnterState(this);
+                statename = "Wander";
             }
         }
 
@@ -162,6 +167,10 @@ namespace ZeroFour
         public float GetFuel()
         {
             return GetFuelLevel;
+        }
+        public void GoTankGo()
+        {
+            StartTank();
         }
         #endregion Proxy Methods
 

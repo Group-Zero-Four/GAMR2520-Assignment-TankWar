@@ -7,19 +7,17 @@ namespace ZeroFour.StateMachine
     public class AttackState : BaseState
     {
 
-        float minCircleRadius = 20, maxCircleRadius = 40;
-        float currentCircleRadius = 0;
         bool targetingEnemy = false;
-        bool circling = false;
-        float currentCircleAngle = 0;
-        float circleRotateSpeed = 10, circlingNormalisedMoveSpeed = 0.5f;
         float attackInterval = 10, currentAttackInterval = 0.2f;
-        Vector3 circlePosition;
+        float distancingTimer = 2f, currentDistancingTimer = 0f;
+        public override string ToString()
+        {
+            return "Attack State";
+        }
         public override void EnterState(CleverTank tank)
         {
             currentTank = tank;
             Debug.Log($"Entered State on {tank.gameObject.name}");
-            currentCircleRadius = Random.Range(minCircleRadius, maxCircleRadius);
         }
 
         public override void ExitState()
@@ -37,50 +35,31 @@ namespace ZeroFour.StateMachine
             if (!targetFound)
                 targetFound = currentTank.GetClosestEnemyBase();
 
-            if(targetingEnemy && !targetFound)
+            //No target was found still. Why are we even in this state?
+            if (!targetFound)
+                return;
+
+            if (Vector3.Distance(currentTank.transform.position, targetFound.transform.position) > 20)
             {
-                
+                currentTank.driveTarget.transform.position =
+                    Vector3.Lerp(currentTank.transform.position, targetFound.transform.position, 0.7f);
+                currentTank.MoveTankToPoint(currentTank.driveTarget, 0.4f);
+            }
+            else if (Vector3.Distance(currentTank.transform.position, targetFound.transform.position) <= 20)
+            {
+                currentTank.FireAtSomething(targetFound);
+                currentDistancingTimer -= Time.deltaTime;
+                if (currentDistancingTimer < 0)
+                {
+                    Vector2 circ = (Random.insideUnitCircle * 15);
+                    currentTank.driveTarget.transform.position = currentTank.transform.position + new Vector3(circ.x, 0, circ.y);
+                    currentTank.MoveTankToPoint(currentTank.driveTarget, 1f);
+                    currentDistancingTimer = distancingTimer;
+                    
+                }
             }
 
-            if (targetFound != null)
-            {
-                targetingEnemy = true;
-                currentTank.AimTurretAtPoint(targetFound);
-                if (!circling)
-                {
-                    currentTank.driveTarget.transform.position = targetFound.transform.position;
-                    currentTank.MoveTankToPoint(currentTank.driveTarget, 0.5f);
-                }
-                currentTank.aimTarget.transform.position = targetFound.transform.position;
-                currentAttackInterval -= Time.deltaTime;
-                if(currentAttackInterval <= 0)
-                {
-                    currentTank.FireAtSomething(targetFound);
-                    currentAttackInterval = attackInterval;
-                }
-
-                if (Vector3.Distance(targetFound.transform.position, currentTank.transform.position) <= currentCircleRadius)
-                {
-                    CircleTarget(targetFound);
-                    circling = true;
-                }
-                else
-                {
-                    circling = false;
-                }
-            }
             targetFound = null;
-
         }
-
-        void CircleTarget(GameObject enemy)
-        {
-            circlePosition = Quaternion.Euler(0, currentCircleAngle, 0) * (Vector3.forward * currentCircleRadius)
-                + enemy.transform.position;
-            currentCircleAngle += Time.deltaTime * circleRotateSpeed;
-            currentTank.driveTarget.transform.position = circlePosition;
-            currentTank.MoveTankToPoint(currentTank.driveTarget, 0.5f);
-        }
-        
     }
 }
