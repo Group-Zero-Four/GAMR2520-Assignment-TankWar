@@ -27,6 +27,7 @@ namespace ZeroFour.StateMachine
         {
             //Check for consumables, enemies or bases,
             //Move to target point if investigating or random point if not
+            currentTank.FollowPathToRandomPoint();
         }
     }
 }
