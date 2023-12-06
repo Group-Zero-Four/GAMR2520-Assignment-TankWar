@@ -15,7 +15,6 @@ namespace ZeroFour
         public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();
         public GameObject driveTarget, aimTarget;
-        public (GameObject drive, GameObject aim) GetTargetPoint() { return (driveTarget, aimTarget); }
         [SerializeField] protected GameObject closestEnemy, closestEnemyBase, closestCollectible;
 
         [SerializeField, Tooltip("Prioritise at X, Deprioritise at Y")] Vector2 lowHealthThreshold, lowFuelThreshold;
@@ -78,8 +77,6 @@ namespace ZeroFour
             }
 
         }
-
-
         #region Proxy Methods
         public void AimTurretAtPoint(GameObject point)
         {
