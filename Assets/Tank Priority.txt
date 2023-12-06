@@ -1,0 +1,42 @@
+Priority Queue
+=-=-=-=-=-=-=-=
+Fuel, Health, Ammo, Attack, Chase, Roam
+
+
+Valuable Info
+=-=-=-=-=-=-=
+Max Velocity Fuel Consumption = 120 seconds / 100 fuel
+Dmg Per Shot : 15
+Consumable HP: 25
+Consumable Ammo: 3
+Consumable Fuel: 30
+
+Fuel Priority
+=-=-=-=-=-=-=
+Begin looking for fuel at 40 Fuel. Stop looking when fuel reaches 60 or above to avoid barely getting over 40 and waste time trying to find the enemy again only to stop to look for fuel midway.
+
+
+Health Priority
+=-=-=-=-=-=-=
+Begin looking for health at 40 HP. Continue looking for Health until HP reaches 70 or above ( This can be overriden if the tank instead finds the enemy tank while roaming for HP and can Engage in a battle)
+
+
+Ammo Priority
+=-=-=-=-=-=-=
+Begin looking for ammo at 3 Ammo. Continue looking for Ammo until Ammo reaches 9 or above ( This can be overriden if the tank instead finds the enemy tank while roaming for Ammo and can Engage in a battle)
+
+
+Attack Priority
+=-=-=-=-=-=-=
+Engage battle with Enemy, Circle the enemy while shooting at him as moving sideways can make the tank dodge enemy bullets.
+
+
+Chase Priority
+=-=-=-=-=-=-=
+When enemy breaks LOS, instantiate an object at it's last known position and move the tank towards it.
+
+
+Roam Priority
+=-=-=-=-=-=-=
+Base and Tank produce 2 separate values of locations to roam towards. The distance of which possesses the highest value is around halfway across the map to encourage the tank to quickly engage in th battlefield and not waste time around the spawn area or going straight to the opposite corner of the map.
+Base Value could potentially get ignored if the Tank is a set distance away from it as it no longer requires its input to assist it in engaging the enemy.
