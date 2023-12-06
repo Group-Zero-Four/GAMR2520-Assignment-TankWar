@@ -6,7 +6,7 @@ namespace ZeroFour.StateMachine
 {
     public class WanderState : BaseState
     {
-        float timer = 10; 
+        float timer = 10; //timer variable
         //minimum and maximum random move distance
         //minimum and maximum times between finding new place to move to
         //is the tank moving to the target point?
