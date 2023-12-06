@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,8 +16,12 @@ namespace ZeroFour.StateMachine
         {
             currentTank = tank;
             Debug.Log($"Entered State on {tank.gameObject.name}");
-            currentTank.MoveTankRandom(0.5f);
-
+            tank.StartCoroutine(DelayFirstPath());
+        }
+        IEnumerator DelayFirstPath()
+        {
+            yield return new WaitForSeconds(2f);
+            currentTank.RandomPointPlease();
         }
 
         public override void ExitState()
@@ -31,9 +36,11 @@ namespace ZeroFour.StateMachine
             //Check for consumables, enemies or bases,
             //Move to target point if investigating or random point if not
             timer -= Time.deltaTime;
+            currentTank.MoveTankRandom(0.5f);
             if (timer <= 0)
             {
-                currentTank.MoveTankRandom(0.5f);
+                timer = 10;
+                currentTank.RandomPointPlease();
             }
                 
         }

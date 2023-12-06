@@ -102,25 +102,25 @@ namespace ZeroFour
             //Prioritise attacking if health is above low health threshold
             if (GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
             {
-                currentState.ExitState();
+                currentState?.ExitState();
                 currentState = stateDict[typeof(RetreatState)];
-                currentState.EnterState(this);
+                currentState?.EnterState(this);
                 return;
             }
 
             if (closestEnemy || closestEnemyBase)
             {
-                currentState.ExitState();
+                currentState?.ExitState();
                 currentState = stateDict[typeof(AttackState)];
-                currentState.EnterState(this);
+                currentState?.EnterState(this);
                 return;
             }
 
             if (currentState is not WanderState)
             {
-                currentState.ExitState();
+                currentState?.ExitState();
                 currentState = stateDict[typeof(WanderState)];
-                currentState.EnterState(this);
+                currentState?.EnterState(this);
             }
         }
 
@@ -140,6 +140,10 @@ namespace ZeroFour
         public void FireAtSomething(GameObject point)
         {
             FireAtPoint(point);
+        }
+        public void RandomPointPlease()
+        {
+            GenerateRandomPoint();
         }
         #endregion Proxy Methods
     }
