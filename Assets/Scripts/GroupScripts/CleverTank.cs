@@ -14,12 +14,12 @@ namespace ZeroFour
         public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();
-        public GameObject targetPoint;
-        public GameObject GetTargetPoint() { return targetPoint; }
+        public GameObject driveTarget, aimTarget;
+        public (GameObject drive, GameObject aim) GetTargetPoint() { return (driveTarget, aimTarget); }
         [SerializeField] protected GameObject closestEnemy, closestEnemyBase, closestCollectible;
 
-        [SerializeField] float lowHealthThreshold, lowFuelThreshold;
-        [SerializeField] int lowAmmoThreshold;
+        [SerializeField, Tooltip("Prioritise at X, Deprioritise at Y")] Vector2 lowHealthThreshold, lowFuelThreshold;
+        [SerializeField, Tooltip("Prioritise at X, Deprioritise at Y")] Vector2 ammoThreshold;
         public GameObject GetClosestEnemy()
         {
             return closestEnemy;
@@ -44,10 +44,7 @@ namespace ZeroFour
             if (currentState != null)
             {
                 currentState.UpdateState();
-                if (currentState.StateNeedsToChange())
-                {
-                    SwitchState();
-                }
+                SwitchState();
             }
         }
         public override void AIOnCollisionEnter(Collision collision)
@@ -68,13 +65,13 @@ namespace ZeroFour
         {
             //Evaluate conditions and then select the appropriate state
             //Prioritise attacking if health is above low health threshold
-            if(GetHealthLevel < lowHealthThreshold)
+            if(GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x)
             {
                 currentState = stateDict[typeof(RetreatState)];
             }
 
 
-            if((closestEnemy || closestEnemyBase))
+            if(closestEnemy || closestEnemyBase)
             {
                 currentState = stateDict[typeof(AttackState)];
                 return;

@@ -24,10 +24,6 @@ namespace ZeroFour.StateMachine
         /// Called every frame
         /// </summary>
         public abstract void UpdateState();
-        /// <summary>
-        /// Returns true if the state is no longer useful, or the conditions for this state are no longer met.
-        /// </summary>
-        /// <returns></returns>
-        public abstract bool StateNeedsToChange();
+
     }
 }

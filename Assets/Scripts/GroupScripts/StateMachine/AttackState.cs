@@ -17,11 +17,6 @@ namespace ZeroFour.StateMachine
 
         }
 
-        public override bool StateNeedsToChange()
-        {
-            return false;
-        }
-
         public override void UpdateState()
         {
             //Hardscope the enemy!
@@ -30,7 +25,8 @@ namespace ZeroFour.StateMachine
             if (enemyFound != null)
             {
                 currentTank.AimTurretAtPoint(enemyFound);
-                currentTank.targetPoint.transform.position = enemyFound.transform.position;
+                currentTank.driveTarget.transform.position = enemyFound.transform.position;
+                currentTank.aimTarget.transform.position = enemyFound.transform.position;
             }
         }
     }

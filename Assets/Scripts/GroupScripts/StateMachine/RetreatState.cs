@@ -18,10 +18,6 @@ namespace ZeroFour.StateMachine
 
         }
 
-        public override bool StateNeedsToChange()
-        {
-            return false;
-        }
 
         public override void UpdateState()
         {

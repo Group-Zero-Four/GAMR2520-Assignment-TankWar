@@ -21,12 +21,6 @@ namespace ZeroFour.StateMachine
             Debug.Log($"Exited State");
         }
 
-        public override bool StateNeedsToChange()
-        {
-            //if enemies are found or health/fuel is low, return true
-            return false;
-        }
-
         public override void UpdateState()
         {
             //Check for consumables, enemies or bases,
