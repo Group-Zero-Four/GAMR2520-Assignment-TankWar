@@ -7,6 +7,7 @@ namespace ZeroFour.StateMachine
 {
     public class RetreatState : BaseState
     {
+        float countdownTimer = 10f;
 
         public override void EnterState(CleverTank tank)
         {
@@ -28,17 +29,27 @@ namespace ZeroFour.StateMachine
         {
             GameObject collectibleFound = currentTank.GetClosestCollectible();
 
-            if (collectibleFound.tag == "Health" && currentTank.GetHealth() != 125 )
+            if (collectibleFound.tag == "Fuel" && currentTank.GetFuel() != 125 )
             {
                 currentTank.MoveTankToPoint(collectibleFound, 0.5f);
             }
-            if (collectibleFound.tag == "Fuel" && currentTank.GetFuel() != 125)
+            else if (collectibleFound.tag == "Health" && currentTank.GetHealth() != 125)
             {
                 currentTank.MoveTankToPoint(collectibleFound, 0.5f);
             }
-            if (collectibleFound.tag == "Ammo" && currentTank.GetAmmo() != 15)
+            else if (collectibleFound.tag == "Ammo" && currentTank.GetAmmo() != 15)
             {
                 currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+            }
+            else
+            {
+                currentTank.MoveTankRandom(0.5f);
+                countdownTimer -= Time.deltaTime;
+                if (countdownTimer < 0)
+                {
+                    countdownTimer = 10;
+                    currentTank.RandomPointPlease();
+                }
             }
         }
     }
