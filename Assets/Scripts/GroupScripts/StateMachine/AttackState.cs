@@ -22,7 +22,10 @@ namespace ZeroFour.StateMachine
 
         public override void ExitState()
         {
-
+            //is health or fuel critically low:
+            //Retreat
+            //has enemy left line of sight?:
+            //Chase
         }
 
         public override void UpdateState()

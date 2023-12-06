@@ -15,7 +15,10 @@ namespace ZeroFour.StateMachine
 
         public override void ExitState()
         {
-
+            //if health and fuel are above critical AND enemy target is in view
+            //AttackState
+            //if health and fuel are above critical AND enemy is NOT in view
+            //Wander
         }
 
 

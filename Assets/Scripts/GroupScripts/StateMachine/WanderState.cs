@@ -18,6 +18,8 @@ namespace ZeroFour.StateMachine
 
         public override void ExitState()
         {
+            //If Enemy in view
+            //Attack
             Debug.Log($"Exited State");
         }
 

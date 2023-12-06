@@ -64,7 +64,7 @@ namespace ZeroFour
         {
             //Evaluate conditions and then select the appropriate state
             //Prioritise attacking if health is above low health threshold
-            if(GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x)
+            if(GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
             {
                 currentState = stateDict[typeof(RetreatState)];
             }
