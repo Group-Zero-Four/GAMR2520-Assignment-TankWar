@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ZeroFour.StateMachine
 {
-    public class RetreatState : BaseState
+    public class SearchingState : BaseState
     {
         float countdownTimer = 10f;
 
@@ -29,15 +29,15 @@ namespace ZeroFour.StateMachine
             GameObject collectibleFound = currentTank.GetClosestCollectible();
             if (collectibleFound != null)
             {
-                if (collectibleFound.CompareTag("Fuel") && currentTank.GetFuel() != 125)
+                if (collectibleFound.CompareTag("Fuel") && currentTank.GetFuel() < 125)
                 {
                     currentTank.MoveTankToPoint(collectibleFound, 0.5f);
                 }
-                else if (collectibleFound.CompareTag("Health") && currentTank.GetHealth() != 125)
+                else if (collectibleFound.CompareTag("Health") && currentTank.GetHealth() < 125)
                 {
                     currentTank.MoveTankToPoint(collectibleFound, 0.5f);
                 }
-                else if (collectibleFound.CompareTag("Ammo") && currentTank.GetAmmo() != 15)
+                else if (collectibleFound.CompareTag("Ammo") && currentTank.GetAmmo() < 15)
                 {
                     currentTank.MoveTankToPoint(collectibleFound, 0.5f);
                 }

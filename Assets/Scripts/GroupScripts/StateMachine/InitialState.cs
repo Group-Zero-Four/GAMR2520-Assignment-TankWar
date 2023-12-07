@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 namespace ZeroFour.StateMachine
 {
-    public class WanderState : BaseState
+    public class InitialState : BaseState
     {
 
         public override string ToString()

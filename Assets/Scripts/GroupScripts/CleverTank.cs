@@ -20,8 +20,8 @@ namespace ZeroFour
         public GameObject driveTarget, aimTarget;
         [SerializeField] protected GameObject closestEnemy, closestEnemyBase, closestCollectible;
 
-        [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 lowHealthThreshold, lowFuelThreshold;
-        [Tooltip("Prioritise at X, Deprioritise at Y")] public Vector2 ammoThreshold;
+        public float lowHealthThreshold, lowFuelThreshold;
+        public float ammoThreshold;
 
         [SerializeField] string statename;
         public GameObject GetClosestEnemy()
@@ -67,6 +67,8 @@ namespace ZeroFour
 
         public override void AITankUpdate()
         {
+            Debug.DrawRay(driveTarget.transform.position, Vector3.up * 10, Color.red, 0.1f, false);
+
             //Populate found objects
             enemyTanksFound = TanksFound;
             enemyBasesFound = BasesFound;
@@ -91,30 +93,22 @@ namespace ZeroFour
         {
             stateDict = new()
             {
-                { typeof(WanderState), new WanderState() },
-                { typeof(RetreatState), new RetreatState() },
+                { typeof(InitialState), new InitialState() },
+                { typeof(SearchingState), new SearchingState() },
                 { typeof(AttackState), new AttackState() },
             };
 
             SwitchState();
         }
+
+        bool IsInDanger()
+        {
+            return GetHealthLevel < lowHealthThreshold || GetAmmoLevel < ammoThreshold || GetFuelLevel < lowFuelThreshold;
+        }
+
         void SwitchState()
         {
-            //Evaluate conditions and then select the appropriate state
-            //Prioritise attacking if health is above low health threshold
-            if (GetHealthLevel < lowHealthThreshold.x || GetFuelLevel < lowFuelThreshold.x || GetAmmoLevel < ammoThreshold.x)
-            {
-                if (currentState is not RetreatState)
-                {
-                    currentState?.ExitState();
-                    currentState = stateDict[typeof(RetreatState)];
-                    currentState?.EnterState(this);
-                    statename = "Retreat";
-                }
-                return;
-            }
-
-            if (closestEnemy || closestEnemyBase)
+            if (closestEnemy || closestEnemyBase && !IsInDanger())
             {
                 if (currentState is not AttackState)
                 {
@@ -126,12 +120,12 @@ namespace ZeroFour
                 return;
             }
 
-            if (currentState is not WanderState)
+            if (currentState is not SearchingState)
             {
                 currentState?.ExitState();
-                currentState = stateDict[typeof(WanderState)];
+                currentState = stateDict[typeof(SearchingState)];
                 currentState?.EnterState(this);
-                statename = "Wander";
+                statename = "Retreat";
             }
         }
 
