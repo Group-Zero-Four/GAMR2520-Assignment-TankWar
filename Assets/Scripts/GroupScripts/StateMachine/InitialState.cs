@@ -22,13 +22,9 @@ namespace ZeroFour.StateMachine
         {
             currentTank = tank;
             Debug.Log($"Entered State on {tank.gameObject.name}");
-            tank.StartCoroutine(DelayFirstPath());
+
         }
-        IEnumerator DelayFirstPath()
-        {
-            yield return new WaitForSeconds(2f);
-            currentTank.RandomPointPlease();
-        }
+
 
         public override void ExitState()
         {
@@ -39,15 +35,7 @@ namespace ZeroFour.StateMachine
 
         public override void UpdateState()
         {
-            //Check for consumables, enemies or bases,
-            //Move to target point if investigating or random point if not
-            timer -= Time.deltaTime;
-            currentTank.MoveTankRandom(0.5f);
-            if (timer <= 0)
-            {
-                timer = 10;
-                currentTank.RandomPointPlease();
-            }
+            currentTank.MoveTankToPoint(currentTank.initTarget,0.5f);
                 
         }
     }

@@ -11,7 +11,7 @@ namespace ZeroFour.StateMachine
         float attackInterval = 10f, currentAttackInterval = 0.2f;
         float distancingTimer = 5f, currentDistancingTimer = 0f;
 
-        float circleAngle = 0, circleSpeed = 5;
+        float circleAngle = 0, circleSpeed = 10;
         public override string ToString()
         {
             return "Attack State";

@@ -79886,6 +79886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   driveTarget: {fileID: 1823379362}
   aimTarget: {fileID: 738215929}
+  initTarget: {fileID: 332180865}
   closestEnemy: {fileID: 0}
   closestEnemyBase: {fileID: 0}
   closestCollectible: {fileID: 0}

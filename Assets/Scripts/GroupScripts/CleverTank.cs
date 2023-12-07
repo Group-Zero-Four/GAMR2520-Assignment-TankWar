@@ -17,7 +17,7 @@ namespace ZeroFour
         public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();
         public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();
-        public GameObject driveTarget, aimTarget;
+        public GameObject driveTarget, aimTarget, initTarget;
         [SerializeField] protected GameObject closestEnemy, closestEnemyBase, closestCollectible;
 
         public float lowHealthThreshold, lowFuelThreshold;
