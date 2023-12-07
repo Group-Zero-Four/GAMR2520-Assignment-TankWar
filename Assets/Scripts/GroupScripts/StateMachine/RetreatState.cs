@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace ZeroFour.StateMachine
@@ -28,18 +27,20 @@ namespace ZeroFour.StateMachine
         public override void UpdateState()
         {
             GameObject collectibleFound = currentTank.GetClosestCollectible();
-
-            if (collectibleFound.tag == "Fuel" && currentTank.GetFuel() != 125 )
+            if (collectibleFound != null)
             {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
-            }
-            else if (collectibleFound.tag == "Health" && currentTank.GetHealth() != 125)
-            {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
-            }
-            else if (collectibleFound.tag == "Ammo" && currentTank.GetAmmo() != 15)
-            {
-                currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                if (collectibleFound.CompareTag("Fuel") && currentTank.GetFuel() != 125)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
+                else if (collectibleFound.CompareTag("Health") && currentTank.GetHealth() != 125)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
+                else if (collectibleFound.CompareTag("Ammo") && currentTank.GetAmmo() != 15)
+                {
+                    currentTank.MoveTankToPoint(collectibleFound, 0.5f);
+                }
             }
             else
             {

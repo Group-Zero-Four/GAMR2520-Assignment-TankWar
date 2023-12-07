@@ -172,6 +172,10 @@ namespace ZeroFour
         {
             StartTank();
         }
+        public bool AmIFiring()
+        {
+            return IsFiring;
+        }
         #endregion Proxy Methods
 
         private void OnDrawGizmosSelected()
