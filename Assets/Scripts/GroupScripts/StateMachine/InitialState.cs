@@ -18,7 +18,7 @@ namespace ZeroFour.StateMachine
         //minimum and maximum times between finding new place to move to
         //is the tank moving to the target point?
         //distance from the target point to start using random points again.
-        public override void EnterState(CleverTank tank)
+        public override void EnterState(SmartAbbleTank_FSM_1 tank)
         {
             currentTank = tank;
             Debug.Log($"Entered State on {tank.gameObject.name}");

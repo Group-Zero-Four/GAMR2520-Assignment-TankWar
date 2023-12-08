@@ -10,7 +10,7 @@ using ZeroFour.StateMachine;
 
 namespace ZeroFour
 {
-    public class CleverTank : AITank
+    public class SmartAbbleTank_FSM_1 : AITank
     {
         //Grabbed from Dumb Tank
         //store ALL currently visible 
@@ -98,7 +98,8 @@ namespace ZeroFour
                 { typeof(AttackState), new AttackState() },
             };
 
-            SwitchState();
+            currentState = stateDict[typeof(InitialState)];
+            currentState?.EnterState(this);
         }
 
         bool IsInDanger()
@@ -120,6 +121,11 @@ namespace ZeroFour
                 return;
             }
 
+            if (currentState is InitialState && closestCollectible == null)
+            {
+                //Tank is in initial state and has not found a collectible, the state should not change.
+                return;
+            }
             if (currentState is not SearchingState)
             {
                 currentState?.ExitState();
