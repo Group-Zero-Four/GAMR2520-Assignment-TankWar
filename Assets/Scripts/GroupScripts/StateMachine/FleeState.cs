@@ -11,7 +11,7 @@ public class FleeState : BaseState
     {
         return "FleeState";
     }
-    public override void EnterState(CleverTank tank)
+    public override void EnterState(SmartAbbleTank_FSM_1 tank)
     {
         currentTank = tank;
         Debug.Log($"Entered State on {tank.gameObject.name}");

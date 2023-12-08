@@ -6,8 +6,20 @@ using UnityEngine;
 
 namespace ZeroFour.RuleBased
 {
+    /// <summary>
+    /// A Rule- based state machine implementation of the Tank AI.
+    /// </summary>
     public class SmartAbbleTank_RBS_1 : AITank
     {
+        #region Fact Strings
+
+        public const string LOWHEALTH = "Low Health", LOWAMMO = "Low Ammo", LOWFUEL = "Low Fuel",
+            ENEMYSEEN = "Enemy Seen", BASESEEN = "Base Seen", BASELOST = "Base Lost", RETREATING = "Retreating", COLLECTABLESEEN = "Collectable Seen";
+        public const string ATTACKINGBASE = "Attacking Base", ATTACKINGENEMY = "Attacking Enemy", COLLECTING = "Collecting";
+        #endregion Fact Strings
+
+
+
         Dictionary<string, bool> facts = new Dictionary<string, bool>();
         public Dictionary<string, bool> GetFacts { get { return facts; } }
         Rules rules = new();
@@ -43,12 +55,12 @@ namespace ZeroFour.RuleBased
 
         public override void AITankStart()
         {
+            InitialiseRules();
             InitialiseStateMachine();
         }
 
         public override void AITankUpdate()
         {
-
             EvaluateRules();
         }
 
@@ -56,9 +68,40 @@ namespace ZeroFour.RuleBased
         {
 
         }
+        void InitialiseRules()
+        {
+            //Add facts
+            facts.Add(LOWHEALTH, false);
+            facts.Add(LOWAMMO, false);
+            facts.Add(LOWFUEL, false);
+            facts.Add(ENEMYSEEN, false);
+            facts.Add(BASESEEN, false);
+            facts.Add(BASELOST, false);
+            facts.Add(RETREATING, false);
+            facts.Add(ATTACKINGBASE, false);
+            facts.Add(ATTACKINGENEMY, false);
+            facts.Add(COLLECTABLESEEN, false);
+            facts.Add(COLLECTING, false);
+            //Add rules
+            string[] ruleconditions = new string[]
+            {
+                LOWHEALTH, LOWAMMO, LOWFUEL
+            };
+            //Danger rule - low health, ammo or fuel
+            rules.AddRule(new(ruleconditions, RETREATING, Rule.Predicate.Or));
+            //Attacking enemy rule - if enemy is seen and not retreating
+            rules.AddRule(new(ENEMYSEEN, RETREATING, ATTACKINGENEMY, Rule.Predicate.OnlyFirst));
+            //Attacking base rule - if base is seen and not reatreating
+            rules.AddRule(new(BASESEEN, RETREATING, ATTACKINGBASE, Rule.Predicate.OnlyFirst));
+        }
         void InitialiseStateMachine()
         {
-            stateDictionary.Add(typeof(AdvancedState), new AS_Patrol(this));
+            stateDictionary.Add(typeof(AS_Rush), new AS_Rush(this));
+            stateDictionary.Add(typeof(AS_Patrol), new AS_Patrol(this));
+            
+
+            currentState = stateDictionary[typeof(AS_Rush)];
+            currentState?.StateEnter();
         }
 
         public IEnumerator TimedFactToggle(float time, string fact, bool state)

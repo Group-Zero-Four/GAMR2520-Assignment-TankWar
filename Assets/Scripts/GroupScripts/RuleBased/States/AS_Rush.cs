@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace ZeroFour.RuleBased
 {
+    /// <summary>
+    /// Moves the tank directly to the enemy base. This state is only used once.
+    /// </summary>
     public class AS_Rush : AdvancedState
     {
         public AS_Rush(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
@@ -22,6 +25,7 @@ namespace ZeroFour.RuleBased
 
         public override void StateUpdate()
         {
+            
             ourTank.MoveTankToPoint(ourTank.rushTarget, 0.8f);
         }
     }
