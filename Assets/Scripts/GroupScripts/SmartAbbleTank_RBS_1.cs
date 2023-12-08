@@ -13,9 +13,10 @@ namespace ZeroFour.RuleBased
     {
         #region Fact Strings
 
-        public const string LOWHEALTH = "Low Health", LOWAMMO = "Low Ammo", LOWFUEL = "Low Fuel",
+        public const string LOWHEALTH = "Low Health", LOWAMMO = "Low Ammo", LOWFUEL = "Low Fuel", DEFENDING = "Defending",
             ENEMYSEEN = "Enemy Seen", BASESEEN = "Base Seen", BASELOST = "Base Lost", RETREATING = "Retreating", COLLECTABLESEEN = "Collectable Seen";
-        public const string ATTACKINGBASE = "Attacking Base", ATTACKINGENEMY = "Attacking Enemy", COLLECTING = "Collecting";
+        public const string ATTACKINGBASE = "Attacking Base", ATTACKINGENEMY = "Attacking Enemy", COLLECTING = "Collecting",
+            HEALTHFULL = "Health Full", AMMOFULL = "Ammo Full", FUELFULL = "Fuel Full", NEEDSCONSUMABLE = "Needs Consumable";
         #endregion Fact Strings
 
 
@@ -82,6 +83,10 @@ namespace ZeroFour.RuleBased
             facts.Add(ATTACKINGENEMY, false);
             facts.Add(COLLECTABLESEEN, false);
             facts.Add(COLLECTING, false);
+            facts.Add(NEEDSCONSUMABLE, false);
+            facts.Add(HEALTHFULL, true);
+            facts.Add(AMMOFULL, true);
+            facts.Add(FUELFULL, true);
             //Add rules
             string[] ruleconditions = new string[]
             {
@@ -93,6 +98,20 @@ namespace ZeroFour.RuleBased
             rules.AddRule(new(ENEMYSEEN, RETREATING, ATTACKINGENEMY, Rule.Predicate.OnlyFirst));
             //Attacking base rule - if base is seen and not reatreating
             rules.AddRule(new(BASESEEN, RETREATING, ATTACKINGBASE, Rule.Predicate.OnlyFirst));
+            ruleconditions = new string[]
+            {
+                HEALTHFULL, AMMOFULL, FUELFULL
+            };
+            //If health, ammo or fuel are NOT full, a consumable is needed
+            rules.AddRule(new(ruleconditions, NEEDSCONSUMABLE, Rule.Predicate.nAnd));
+            ruleconditions = new string[]
+            {
+                NEEDSCONSUMABLE, ATTACKINGBASE, ATTACKINGENEMY
+            };
+            //If an enemy or base is NOT visible, and a consumable is needed, path to consumables
+            rules.AddRule(new(ruleconditions, COLLECTING, Rule.Predicate.OnlyFirst));
+            //If we have less than two bases and are not in danger, return to the bases to defend them.
+            rules.AddRule(new(BASELOST, RETREATING, DEFENDING, Rule.Predicate.OnlyFirst));
         }
         void InitialiseStateMachine()
         {
@@ -135,6 +154,10 @@ namespace ZeroFour.RuleBased
         public void Fire(GameObject point)
         {
             FireAtPoint(point);
+        }
+        public void StopTheTank()
+        {
+            StopTank();
         }
         public float GetHealth { get { return GetHealthLevel; } }
         public float GetAmmo { get {  return GetAmmoLevel; } }

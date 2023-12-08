@@ -12,7 +12,7 @@ namespace ZeroFour.RuleBased
         public string[] conditions;
         public string result;
         public Predicate compare;
-        public enum Predicate { And, Or, nAnd, OnlyFirst };
+        public enum Predicate { And, Or, nAnd, OnlyFirst, nOr };
         public Rule(string conditionA, string conditionB, string result, Predicate compare)
         {
             this.conditionA = conditionA;
@@ -44,6 +44,9 @@ namespace ZeroFour.RuleBased
                 case Predicate.OnlyFirst:
                     facts[result] = condABool & !condBBool;
                         break;
+                case Predicate.nOr:
+                    facts[result] = !(condABool | condBBool);
+                    break;
                 default:
                     return null;
             }

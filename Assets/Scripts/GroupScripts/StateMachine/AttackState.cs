@@ -8,10 +8,10 @@ namespace ZeroFour.StateMachine
     {
 
         bool targetingEnemy = false;
-        float attackInterval = 10f, currentAttackInterval = 0.2f;
+        float attackInterval = 10f, currentAttackInterval = 5f;
         float distancingTimer = 5f, currentDistancingTimer = 0f;
         bool targetIsBase = false;
-        float circleAngle = 0, circleSpeed = 20, circleRadius = 30;
+        float circleAngle = 0, circleSpeed = 25, circleRadius = 30;
         public override string ToString()
         {
             return "Attack State";
@@ -26,6 +26,7 @@ namespace ZeroFour.StateMachine
                 targetFound = currentTank.GetClosestEnemyBase();
 
             circleAngle = Vector3.Angle(tank.transform.position, targetFound.transform.position);
+
         }
 
         public override void ExitState()
@@ -51,19 +52,40 @@ namespace ZeroFour.StateMachine
             if (!targetFound)
                 return;
 
-            if (targetIsBase)
+            if (!currentTank.AmIFiring())
             {
-                Vector3 direction = (targetFound.transform.position - currentTank.transform.position).normalized;
+                currentTank.AimTurretAtPoint(targetFound);
+            }
+
+
+            if (!targetIsBase)
+            {
                 circleAngle += Time.deltaTime * circleSpeed;
                 Vector3 drivePosition = Quaternion.Euler(0, circleAngle, 0) * (Vector3.forward * circleRadius) + targetFound.transform.position;
                 currentTank.driveTarget.transform.position = drivePosition;
-                currentTank.MoveTankToPoint(currentTank.driveTarget, 0.5f);
+                currentTank.MoveTankToPoint(currentTank.driveTarget, 0.3f);
+                if (currentAttackInterval <= 0 && !currentTank.AmIFiring())
+                {
+                    currentTank.FireAtSomething(targetFound);
+                    currentAttackInterval = attackInterval;
+                }
+                else
+                {
+                    currentAttackInterval -= Time.deltaTime;
+                }
             }
             else
             {
-
+                currentTank.driveTarget.transform.position = targetFound.transform.position;
+                if (Vector3.Distance(currentTank.transform.position, currentTank.driveTarget.transform.position) > 10)
+                {
+                    currentTank.MoveTankToPoint(currentTank.driveTarget, 0.3f);
+                }
+                else
+                {
+                    currentTank.FireAtSomething(targetFound);
+                }
             }
-            currentTank.AimTurretAtPoint(targetFound);
             targetFound = null;
         }
     }
