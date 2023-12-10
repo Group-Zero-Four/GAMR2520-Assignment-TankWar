@@ -9,21 +9,17 @@ namespace ZeroFour.RuleBased
     /// <summary>
     /// A Rule- based state machine implementation of the Tank AI.
     /// </summary>
-    public class SmartAbbleTank_RBS_1 : AITank
+    public class SmartAbbleTank_RBS_1 : SmartAbbleTank_Base
     {
         #region Fact Strings
 
         public const string LOWHEALTH = "Low Health", LOWAMMO = "Low Ammo", LOWFUEL = "Low Fuel", DEFENDING = "Defending",
             ENEMYSEEN = "Enemy Seen", BASESEEN = "Base Seen", BASELOST = "Base Lost", RETREATING = "Retreating", COLLECTABLESEEN = "Collectable Seen";
         public const string ATTACKINGBASE = "Attacking Base", ATTACKINGENEMY = "Attacking Enemy", COLLECTING = "Collecting",
-            HEALTHFULL = "Health Full", AMMOFULL = "Ammo Full", FUELFULL = "Fuel Full", NEEDSCONSUMABLE = "Needs Consumable";
+            HEALTHFULL = "Health Full", AMMOFULL = "Ammo Full", FUELFULL = "Fuel Full", NEEDSCONSUMABLE = "Needs Consumable", PATROLLING = "Patrolling";
         #endregion Fact Strings
+        public Dictionary<string, Type> factStatePairs = new();
 
-
-
-        Dictionary<string, bool> facts = new Dictionary<string, bool>();
-        public Dictionary<string, bool> GetFacts { get { return facts; } }
-        Rules rules = new();
         Dictionary<Type, AdvancedState> stateDictionary = new();
         AdvancedState currentState;
 
@@ -44,8 +40,6 @@ namespace ZeroFour.RuleBased
          * Base Attack state - when a base is found, the tank will get within a specified distance, fire, then leave
          * 
          * Base Defence state - when one or both bases are lost, the tank will path back to the start point.
-         * 
-         * 
          */
 
 
@@ -60,14 +54,102 @@ namespace ZeroFour.RuleBased
             InitialiseStateMachine();
         }
 
+
         public override void AITankUpdate()
         {
-            EvaluateRules();
+            closestEnemy = FindClosest(TanksFound);
+            closestBase = FindClosest(BasesFound);
+            closestConsumable = FindClosest(ConsumablesFound);
+            rushing = rushTimer > 0;
+            if (!rushing)
+            {
+                EvaluateRules();
+            }
+            else
+            {
+                rushTimer -= Time.deltaTime;
+            }
+            currentState?.StateUpdate();
+
         }
 
         void EvaluateRules()
         {
+            //Danger evaluation
+            facts[LOWHEALTH] = GetHealth < lowHealthThreshold;
+            facts[HEALTHFULL] = GetHealth > 100;
+            facts[LOWFUEL] = GetFuel < lowFuelThreshold;
+            facts[FUELFULL] = GetFuel > 100;
+            facts[LOWAMMO] = GetAmmo < lowAmmoThreshold;
+            facts[AMMOFULL] = GetAmmo > 100;
 
+            //Attack evaluation
+            facts[ENEMYSEEN] = closestEnemy;
+            facts[BASESEEN] = closestBase;
+            facts[BASELOST] = GetMyBases.Count < 2;
+
+            facts[COLLECTABLESEEN] = closestConsumable;
+            print( $"collectable - {facts[COLLECTABLESEEN]} enemy - {facts[ENEMYSEEN]} base - {facts[BASESEEN]}");
+
+            foreach (var item in rules.GetRules)
+            {
+                var checkedFacts = item.TryCheckRule(facts);
+                //Then patrol
+
+                print($"getting collectable - {checkedFacts[COLLECTING]} attacking enemy - {checkedFacts[ATTACKINGENEMY]} attacking base - {checkedFacts[ATTACKINGBASE]}");
+
+
+                print($"{checkedFacts[PATROLLING]}, {checkedFacts[RETREATING]}");
+                if (checkedFacts[RETREATING])
+                {
+                    print("patrolling");
+                    SwitchState(stateDictionary[factStatePairs[PATROLLING]].GetType());
+                    return;
+                }
+                if (checkedFacts[ATTACKINGENEMY])
+                {
+                    Debug.Log("Attacking enemy!");
+                    SwitchState(stateDictionary[factStatePairs[ATTACKINGENEMY]].GetType());
+                    return;
+                }
+                if (checkedFacts[ATTACKINGBASE])
+                {
+                    print("Attacking base!");
+                    SwitchState(stateDictionary[factStatePairs[ATTACKINGBASE]].GetType());
+                    return;
+                }
+                //Then collect
+                if (checkedFacts[COLLECTING]) 
+                {
+                    print("collecting item!");
+                    SwitchState(stateDictionary[factStatePairs[COLLECTING]].GetType());
+                    return;
+                }
+                if (checkedFacts[PATROLLING])
+                {
+                    print("patrolling");
+                    SwitchState(stateDictionary[factStatePairs[PATROLLING]].GetType());
+                    return;
+                }
+            }
+        }
+        void SwitchState(Type nextState)
+        {
+            if (currentState != null)
+            {
+                if (currentState.GetType() != nextState)
+                {
+                    currentState?.StateExit();
+                    currentState = stateDictionary[nextState];
+                    currentState?.StateEnter();
+                }
+            }
+            else
+            {
+                currentState?.StateExit();
+                currentState = stateDictionary[nextState];
+                currentState?.StateEnter();
+            }
         }
         void InitialiseRules()
         {
@@ -87,40 +169,37 @@ namespace ZeroFour.RuleBased
             facts.Add(HEALTHFULL, true);
             facts.Add(AMMOFULL, true);
             facts.Add(FUELFULL, true);
+            facts.Add(PATROLLING, false);
             //Add rules
-            string[] ruleconditions = new string[]
-            {
-                LOWHEALTH, LOWAMMO, LOWFUEL
-            };
             //Danger rule - low health, ammo or fuel
-            rules.AddRule(new(ruleconditions, RETREATING, Rule.Predicate.Or));
+            rules.AddRule(new(LOWHEALTH, LOWAMMO, LOWFUEL, RETREATING, Rule.Predicate.Or));
             //Attacking enemy rule - if enemy is seen and not retreating
             rules.AddRule(new(ENEMYSEEN, RETREATING, ATTACKINGENEMY, Rule.Predicate.OnlyFirst));
             //Attacking base rule - if base is seen and not reatreating
             rules.AddRule(new(BASESEEN, RETREATING, ATTACKINGBASE, Rule.Predicate.OnlyFirst));
-            ruleconditions = new string[]
-            {
-                HEALTHFULL, AMMOFULL, FUELFULL
-            };
             //If health, ammo or fuel are NOT full, a consumable is needed
-            rules.AddRule(new(ruleconditions, NEEDSCONSUMABLE, Rule.Predicate.nAnd));
-            ruleconditions = new string[]
-            {
-                NEEDSCONSUMABLE, ATTACKINGBASE, ATTACKINGENEMY
-            };
+            rules.AddRule(new(HEALTHFULL, AMMOFULL, FUELFULL, NEEDSCONSUMABLE, Rule.Predicate.nAnd));
             //If an enemy or base is NOT visible, and a consumable is needed, path to consumables
-            rules.AddRule(new(ruleconditions, COLLECTING, Rule.Predicate.OnlyFirst));
+            rules.AddRule(new(COLLECTABLESEEN, NEEDSCONSUMABLE, COLLECTING, Rule.Predicate.And));
             //If we have less than two bases and are not in danger, return to the bases to defend them.
             rules.AddRule(new(BASELOST, RETREATING, DEFENDING, Rule.Predicate.OnlyFirst));
+
+            rules.AddRule(new(ENEMYSEEN, BASESEEN, COLLECTING, PATROLLING, Rule.Predicate.nAnd));
         }
         void InitialiseStateMachine()
         {
             stateDictionary.Add(typeof(AS_Rush), new AS_Rush(this));
             stateDictionary.Add(typeof(AS_Patrol), new AS_Patrol(this));
-            
+            stateDictionary.Add(typeof(AS_AttackBase), new AS_AttackBase(this));
+            stateDictionary.Add(typeof(AS_AttackEnemy), new AS_AttackEnemy(this));
+            stateDictionary.Add(typeof(AS_Collect), new AS_Collect(this));
 
-            currentState = stateDictionary[typeof(AS_Rush)];
-            currentState?.StateEnter();
+            factStatePairs.Add(PATROLLING, typeof(AS_Patrol));
+            factStatePairs.Add(ATTACKINGENEMY, typeof(AS_AttackEnemy));
+            factStatePairs.Add(ATTACKINGBASE, typeof(AS_AttackBase));
+            factStatePairs.Add(COLLECTING, typeof(AS_Collect));
+
+            SwitchState(typeof(AS_Rush));
         }
 
         public IEnumerator TimedFactToggle(float time, string fact, bool state)
@@ -133,36 +212,6 @@ namespace ZeroFour.RuleBased
         
 
         
-        #region Helper Methods
 
-        public void MoveTankToPoint(GameObject point, float normalisedSpeed)
-        {
-            FollowPathToPoint(point, normalisedSpeed);
-        }
-        public void MoveTankRandomly(float normalisedSpeed)
-        {
-            FollowPathToRandomPoint(normalisedSpeed);
-        }
-        public void NewRandomPoint()
-        {
-            GenerateRandomPoint();
-        }
-        public void AimAtPoint(GameObject point)
-        {
-            FaceTurretToPoint(point);
-        }
-        public void Fire(GameObject point)
-        {
-            FireAtPoint(point);
-        }
-        public void StopTheTank()
-        {
-            StopTank();
-        }
-        public float GetHealth { get { return GetHealthLevel; } }
-        public float GetAmmo { get {  return GetAmmoLevel; } }
-        public float GetFuel { get { return GetFuelLevel; } }
-
-        #endregion Helper Methods
     }
 }

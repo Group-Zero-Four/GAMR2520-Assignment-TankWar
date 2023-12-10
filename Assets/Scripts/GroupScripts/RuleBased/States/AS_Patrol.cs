@@ -29,6 +29,7 @@ namespace ZeroFour.RuleBased {
             if (currRepathTime > repathTime)
             {
                 ourTank.NewRandomPoint();
+                currRepathTime = repathTime;
             }
             ourTank.MoveTankRandomly(speed);
         }

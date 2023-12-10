@@ -8,9 +8,9 @@ namespace ZeroFour.RuleBased
 {
     public class Rule
     {
-        public string conditionA, conditionB;
-        public string[] conditions;
+        public string conditionA, conditionB, conditionC, conditionD;
         public string result;
+        int conditionCount;
         public Predicate compare;
         public enum Predicate { And, Or, nAnd, OnlyFirst, nOr };
         public Rule(string conditionA, string conditionB, string result, Predicate compare)
@@ -19,87 +19,127 @@ namespace ZeroFour.RuleBased
             this.conditionB = conditionB;
             this.result = result;
             this.compare = compare;
+            conditionCount = 2;
         }
-        public Rule(string[] conditions, string result, Predicate compare)
+        public Rule(string conditionA, string conditionB, string conditionC, string result, Predicate compare)
         {
-            this.conditions = conditions;
-            this.result= result;
+            this.conditionA = conditionA;
+            this.conditionB = conditionB;
+            this.conditionC = conditionC;
+            this.result = result;
             this.compare = compare;
+            conditionCount = 3;
         }
-        public Dictionary<string, bool> CheckRule(Dictionary<string, bool> facts)
+
+        public Rule(string conditionA, string conditionB, string conditionC, string conditionD, string result, Predicate compare)
         {
+            this.conditionA = conditionA;
+            this.conditionB = conditionB;
+            this.conditionC = conditionC;
+            this.conditionD = conditionD;
+            this.result = result;
+            this.compare = compare;
+            conditionCount = 4;
+        }
+
+        public Dictionary<string, bool> TryCheckRule(Dictionary<string, bool> facts)
+        {
+            switch (conditionCount)
+            {
+                case 2:
+                    return CheckRuleTwo(facts);
+                case 3:
+                    return CheckRuleThree(facts);
+                case 4:
+                    return CheckRuleFour(facts);
+                default:
+                    return null;
+            }
+        }
+        public Dictionary<string, bool> CheckRuleTwo(Dictionary<string, bool> facts)
+        {
+            Debug.Log($"checking {nameof(facts)}");
             bool condABool = facts[conditionA];
             bool condBBool = facts[conditionB];
             switch (compare)
             {
                 case Predicate.And:
-                    facts[result] = condABool & condBBool;
+                    facts[result] = condABool && condBBool;
                     break;
                 case Predicate.Or:
-                    facts[result] = condABool | condBBool;
+                    facts[result] = condABool || condBBool;
                     break;
                 case Predicate.nAnd:
-                    facts[result] = !condABool & !condBBool;
+                    facts[result] = !condABool && !condBBool;
                     break;
                 case Predicate.OnlyFirst:
-                    facts[result] = condABool & !condBBool;
+                    facts[result] = condABool && !condBBool;
                         break;
                 case Predicate.nOr:
-                    facts[result] = !(condABool | condBBool);
+                    facts[result] = !(condABool || condBBool);
                     break;
                 default:
                     return null;
             }
             return facts;
         }
-        public Dictionary<string, bool> CheckRuleArray(Dictionary<string, bool> facts)
+        public Dictionary<string, bool> CheckRuleThree(Dictionary<string, bool> facts)
         {
-            bool meetsPredicate = false;
-            int evaluated = -1;
-            foreach (var item in facts)
+            Debug.Log($"checking {nameof(facts)}");
+            bool condABool = facts[conditionA];
+            bool condBBool = facts[conditionB];
+            bool condCBool = facts[conditionC];
+            switch (compare)
             {
-                if(evaluated == -1)
-                {
-                    switch (compare)
-                    {
-                        case Predicate.And:
-                            meetsPredicate = item.Value;
-                            break;
-                        case Predicate.Or:
-                            meetsPredicate = item.Value;
-                            break;
-                        case Predicate.nAnd:
-                            meetsPredicate = !item.Value;
-                            break;
-                        case Predicate.OnlyFirst:
-                            meetsPredicate = item.Value;
-                            break;
-                        default:
-                            return null;
-                    }
-                    continue;
-                }
-
-                switch (compare)
-                {
-                    case Predicate.And:
-                        meetsPredicate &= item.Value;
-                        break;
-                    case Predicate.Or:
-                        meetsPredicate |= item.Value;
-                        break;
-                    case Predicate.nAnd:
-                        meetsPredicate &= !item.Value;
-                        break;
-                    case Predicate.OnlyFirst:
-                        meetsPredicate &= !item.Value;
-                        break;
-                    default:
-                        return null;
-                }
+                case Predicate.And:
+                    facts[result] = condABool && condBBool && condCBool;
+                    break;
+                case Predicate.Or:
+                    facts[result] = condABool || condBBool || condCBool;
+                    break;
+                case Predicate.nAnd:
+                    facts[result] = !condABool && !condBBool && !condCBool;
+                    break;
+                case Predicate.OnlyFirst:
+                    facts[result] = condABool && !condBBool && !condCBool;
+                    break;
+                case Predicate.nOr:
+                    facts[result] = !(condABool || condBBool || condCBool);
+                    break;
+                default:
+                    return null;
             }
-            facts[result] = meetsPredicate;
             return facts;
         }
+        public Dictionary<string, bool> CheckRuleFour(Dictionary<string, bool> facts)
+        {
+            Debug.Log($"checking {nameof(facts)}");
+            bool condABool = facts[conditionA];
+            bool condBBool = facts[conditionB];
+            bool condCBool = facts[conditionC];
+            bool condDbool = facts[conditionD];
+            switch (compare)
+            {
+                case Predicate.And:
+                    facts[result] = condABool && condBBool && condBBool && condCBool;
+                    break;
+                case Predicate.Or:
+                    facts[result] = condABool || condBBool || condCBool || condDbool;
+                    break;
+                case Predicate.nAnd:
+                    facts[result] = !condABool && !condBBool && !condBBool && !condCBool;
+                    break;
+                case Predicate.OnlyFirst:
+                    facts[result] = condABool && !condBBool && !condBBool && !condCBool;
+                    break;
+                case Predicate.nOr:
+                    facts[result] = !(condABool || condBBool || condCBool || condDbool);
+                    break;
+                default:
+                    return null;
+            }
+            return facts;
+        }
+
     }
 }

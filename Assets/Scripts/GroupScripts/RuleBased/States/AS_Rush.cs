@@ -25,7 +25,6 @@ namespace ZeroFour.RuleBased
 
         public override void StateUpdate()
         {
-            
             ourTank.MoveTankToPoint(ourTank.rushTarget, 0.8f);
         }
     }

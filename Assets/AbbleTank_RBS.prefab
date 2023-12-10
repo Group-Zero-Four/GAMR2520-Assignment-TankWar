@@ -15742,6 +15742,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e9d5973a5a6f2489f7994d1c456558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lowHealthThreshold: 40
+  lowFuelThreshold: 40
+  lowAmmoThreshold: 4
+  closestEnemy: {fileID: 0}
+  closestBase: {fileID: 0}
+  closestConsumable: {fileID: 0}
+  prioritisedConsumable: {fileID: 0}
+  priorityConsumableTag: 
   driveTarget: {fileID: 2033370736747255132}
   aimTarget: {fileID: 6239855393907144318}
   rushTarget: {fileID: 6829728978851821740}
@@ -26091,7 +26099,7 @@ Transform:
   - {fileID: 4253755019251145822}
   - {fileID: 1101115043730696722}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7560888167274138828
 GameObject:
