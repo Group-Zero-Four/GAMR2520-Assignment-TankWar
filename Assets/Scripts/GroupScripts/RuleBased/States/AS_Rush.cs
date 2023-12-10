@@ -9,7 +9,7 @@ namespace ZeroFour.RuleBased
     /// </summary>
     public class AS_Rush : AdvancedState
     {
-        public AS_Rush(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
+        public AS_Rush(SmartAbbleTank_Base ourTank) : base(ourTank)
         {
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,13 @@ namespace ZeroFour.RuleBased
         protected Dictionary<string, bool> facts = new Dictionary<string, bool>();
         public GameObject closestEnemy, closestBase, closestConsumable, prioritisedConsumable;
         [SerializeField] protected float lowHealthThreshold, lowFuelThreshold, lowAmmoThreshold;
-        protected Rules rules = new();
+        [Obsolete("Exists for back-compat with SmartAbbleTank_RBS_1")] protected Rules rules = new();
+        protected RuleTypes ruleTypes = new();
         protected float rushTimer = 10;
         protected bool rushing = true;
+        protected Dictionary<Type, AdvancedState> stateDictionary = new();
+        public GameObject driveTarget, aimTarget, rushTarget;
+
         public override void AITankStart()
         {
 
@@ -77,6 +82,7 @@ namespace ZeroFour.RuleBased
         public bool GetFiring { get { return IsFiring; } }
         public GameObject GetClosestEnemy { get { return FindClosest(TanksFound); } }
         public GameObject GetClosestBase { get { return FindClosest(BasesFound); } }
+        public GameObject GetClosestConsumable { get { return FindClosest(ConsumablesFound); } }
         #endregion Helper Methods
     }
 }

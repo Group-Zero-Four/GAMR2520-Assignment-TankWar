@@ -10,7 +10,7 @@ namespace ZeroFour.RuleBased {
     {
         float repathTime = 20, currRepathTime = 0;
         float speed = 0.6f;
-        public AS_Patrol(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
+        public AS_Patrol(SmartAbbleTank_Base ourTank) : base(ourTank)
         {
         }
 

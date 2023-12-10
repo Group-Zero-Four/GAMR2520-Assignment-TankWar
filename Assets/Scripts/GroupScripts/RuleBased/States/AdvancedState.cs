@@ -6,8 +6,8 @@ namespace ZeroFour.RuleBased
 {
     public abstract class AdvancedState
     {
-        protected SmartAbbleTank_RBS_1 ourTank;
-        public AdvancedState(SmartAbbleTank_RBS_1 ourTank)
+        protected SmartAbbleTank_Base ourTank;
+        public AdvancedState(SmartAbbleTank_Base ourTank)
         {
             this.ourTank = ourTank;
         }

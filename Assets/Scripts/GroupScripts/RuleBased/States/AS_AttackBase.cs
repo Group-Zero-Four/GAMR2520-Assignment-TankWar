@@ -5,7 +5,7 @@ namespace ZeroFour.RuleBased
 {
     public class AS_AttackBase : AdvancedState
     {
-        public AS_AttackBase(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
+        public AS_AttackBase(SmartAbbleTank_Base ourTank) : base(ourTank)
         {
         }
 

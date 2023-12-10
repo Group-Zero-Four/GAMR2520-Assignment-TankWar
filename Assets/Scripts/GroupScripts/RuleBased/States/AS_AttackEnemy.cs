@@ -12,13 +12,13 @@ namespace ZeroFour.RuleBased
         private float circleSpeed = 25;
         private readonly float circleRadius = 30;
 
-        public AS_AttackEnemy(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
+        public AS_AttackEnemy(SmartAbbleTank_Base ourTank) : base(ourTank)
         {
         }
 
         public override void StateEnter()
         {
-
+            Debug.Log("entering attack state");
         }
 
         public override void StateExit()
@@ -29,8 +29,10 @@ namespace ZeroFour.RuleBased
         public override void StateUpdate()
         {
             GameObject closestEnemy = ourTank.GetClosestEnemy;
+            Debug.Log(closestEnemy.name);
             if (closestEnemy)
             {
+                Debug.Log("Attempting to attack an enemy");
                 if (currentFireInterval > 0)
                 {
                     currentCircleAngle += Time.deltaTime * circleSpeed;

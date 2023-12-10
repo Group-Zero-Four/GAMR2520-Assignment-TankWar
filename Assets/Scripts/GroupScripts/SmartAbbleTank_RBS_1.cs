@@ -20,10 +20,8 @@ namespace ZeroFour.RuleBased
         #endregion Fact Strings
         public Dictionary<string, Type> factStatePairs = new();
 
-        Dictionary<Type, AdvancedState> stateDictionary = new();
         AdvancedState currentState;
 
-        public GameObject driveTarget, aimTarget, rushTarget;
 
         /*Tank needs the following states
          * Rush state - the first one.

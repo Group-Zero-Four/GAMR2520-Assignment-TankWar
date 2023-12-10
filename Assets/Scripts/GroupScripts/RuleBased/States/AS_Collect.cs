@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ZeroFour.RuleBased {
     public class AS_Collect : AdvancedState
     {
-        public AS_Collect(SmartAbbleTank_RBS_1 ourTank) : base(ourTank)
+        public AS_Collect(SmartAbbleTank_Base ourTank) : base(ourTank)
         {
         }
 
