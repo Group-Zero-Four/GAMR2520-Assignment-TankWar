@@ -29,7 +29,6 @@ namespace ZeroFour.RuleBased
         public override void StateUpdate()
         {
             GameObject closestEnemy = ourTank.GetClosestEnemy;
-            Debug.Log(closestEnemy.name);
             if (closestEnemy)
             {
                 Debug.Log("Attempting to attack an enemy");
@@ -38,8 +37,9 @@ namespace ZeroFour.RuleBased
                     currentCircleAngle += Time.deltaTime * circleSpeed;
                     ourTank.driveTarget.transform.position = closestEnemy.transform.position +
                         Quaternion.Euler(0, currentCircleAngle, 0) * Vector3.forward * circleRadius;
-                    ourTank.MoveTankToPoint(ourTank.driveTarget, 0.2f);
+                    ourTank.MoveTankToPoint(ourTank.driveTarget, 0.5f);
                     ourTank.AimAtPoint(closestEnemy);
+                    currentFireInterval -= Time.deltaTime;
                 }
                 else
                 {
@@ -49,6 +49,10 @@ namespace ZeroFour.RuleBased
                     }
                     currentFireInterval = fireInterval;
                 }
+            }
+            else
+            {
+                Debug.Log("hoe the fuck are we in the attack state without an enemy???");
             }
             Debug.DrawRay(ourTank.driveTarget.transform.position, Vector3.forward, Color.red, 0.1f);
             Debug.DrawRay(ourTank.driveTarget.transform.position, Vector3.right, Color.red, 0.1f);

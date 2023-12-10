@@ -15749,6 +15749,10 @@ MonoBehaviour:
   lowHealthThreshold: 0
   lowFuelThreshold: 0
   lowAmmoThreshold: 0
+  driveTarget: {fileID: 2033370736747255132}
+  aimTarget: {fileID: 6239855393907144318}
+  rushTarget: {fileID: 6829728978851821740}
+  stateName: 
 --- !u!1 &4607361465849415633
 GameObject:
   m_ObjectHideFlags: 0

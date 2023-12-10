@@ -56,16 +56,18 @@ namespace ZeroFour.RuleBased
         void InitRules()
         {
             ruleTypes.AddRule(new(ENEMYSEEN, DANGER, typeof(AS_AttackEnemy), RuleType.Predicate.OnlyFirst));
+            ruleTypes.AddRule(new(ENEMYSEEN, DANGER, CONSUMABLESEEN, BASESEEN, typeof(AS_Patrol), RuleType.Predicate.nAnd));
         }
         void InitStateMachine()
         {
             stateDictionary.Add(typeof(AS_AttackEnemy), new AS_AttackEnemy(this));
+            stateDictionary.Add(typeof(AS_Patrol), new AS_Patrol(this));
         }
         void EvaluateRules()
         {
-            facts[ENEMYSEEN] = closestEnemy;
-            facts[BASESEEN] = closestBase;
-            facts[CONSUMABLESEEN] = closestConsumable;
+            facts[ENEMYSEEN] = closestEnemy != null;
+            facts[BASESEEN] = closestBase != null;
+            facts[CONSUMABLESEEN] = closestConsumable != null;
             string rulePrint = $" D Enemy Seen - {facts[ENEMYSEEN]}, D Base Seen - {facts[BASESEEN]}, " +
     $"D Consumable Seen - {facts[CONSUMABLESEEN]}";
             print(rulePrint);
