@@ -53,6 +53,11 @@ namespace ZeroFour.RuleBased
             else
             {
                 Debug.Log("hoe the fuck are we in the attack state without an enemy???");
+                ourTank.MoveTankToPoint(ourTank.driveTarget, 0.5f);
+                currentCircleAngle += Time.deltaTime * circleSpeed;
+                Vector3 aimTargPos = Quaternion.Euler(0, currentCircleAngle, 0) * Vector3.forward * circleRadius;
+                ourTank.aimTarget.transform.position = ourTank.transform.position + aimTargPos;
+                ourTank.AimAtPoint(ourTank.aimTarget);
             }
             Debug.DrawRay(ourTank.driveTarget.transform.position, Vector3.forward, Color.red, 0.1f);
             Debug.DrawRay(ourTank.driveTarget.transform.position, Vector3.right, Color.red, 0.1f);

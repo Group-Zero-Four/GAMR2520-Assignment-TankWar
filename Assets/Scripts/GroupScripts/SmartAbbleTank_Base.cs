@@ -16,7 +16,7 @@ namespace ZeroFour.RuleBased
         protected float rushTimer = 10;
         protected bool rushing = true;
         protected Dictionary<Type, AdvancedState> stateDictionary = new();
-        public GameObject driveTarget, aimTarget, rushTarget;
+        public GameObject driveTarget, aimTarget, rushTarget, defenceTarget;
 
         public override void AITankStart()
         {

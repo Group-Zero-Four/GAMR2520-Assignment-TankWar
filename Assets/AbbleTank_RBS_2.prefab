@@ -9889,6 +9889,37 @@ Transform:
   m_Father: {fileID: 2596537870900308477}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1840199634080257537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4854334173714820412}
+  m_Layer: 0
+  m_Name: DefenceTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4854334173714820412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840199634080257537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 57.6, y: 0, z: 64.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4826180963798503560}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1989438209757075348
 GameObject:
   m_ObjectHideFlags: 0
@@ -15746,13 +15777,16 @@ MonoBehaviour:
   closestBase: {fileID: 0}
   closestConsumable: {fileID: 0}
   prioritisedConsumable: {fileID: 0}
-  lowHealthThreshold: 0
-  lowFuelThreshold: 0
-  lowAmmoThreshold: 0
+  lowHealthThreshold: 40
+  lowFuelThreshold: 40
+  lowAmmoThreshold: 40
   driveTarget: {fileID: 2033370736747255132}
   aimTarget: {fileID: 6239855393907144318}
   rushTarget: {fileID: 6829728978851821740}
+  defenceTarget: {fileID: 1840199634080257537}
   stateName: 
+  stateCheckTimer: 0.5
+  baseLostAggressionTime: 30
 --- !u!1 &4607361465849415633
 GameObject:
   m_ObjectHideFlags: 0
@@ -26098,6 +26132,7 @@ Transform:
   - {fileID: 4107487283149070712}
   - {fileID: 4253755019251145822}
   - {fileID: 1101115043730696722}
+  - {fileID: 4854334173714820412}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
