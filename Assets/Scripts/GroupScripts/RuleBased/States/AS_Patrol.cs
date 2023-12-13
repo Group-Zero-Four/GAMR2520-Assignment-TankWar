@@ -14,6 +14,11 @@ namespace ZeroFour.RuleBased {
         {
         }
 
+        public override void CollisionCallback(Collision collision)
+        {
+
+        }
+
         public override void StateEnter()
         {
             Debug.Log("Tank is patrolling...");

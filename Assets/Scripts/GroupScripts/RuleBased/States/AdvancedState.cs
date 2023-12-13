@@ -15,5 +15,6 @@ namespace ZeroFour.RuleBased
         public abstract void StateEnter();
         public abstract void StateExit();
         public abstract void StateUpdate();
+        public abstract void CollisionCallback(Collision collision);
     }
 }

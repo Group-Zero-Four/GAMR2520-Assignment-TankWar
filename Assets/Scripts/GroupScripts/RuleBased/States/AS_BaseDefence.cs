@@ -33,5 +33,10 @@ namespace ZeroFour.RuleBased
 
             ourTank.MoveTankToPoint(ourTank.driveTarget, 0.8f);
         }
+
+        public override void CollisionCallback(Collision collision)
+        {
+
+        }
     }
 }

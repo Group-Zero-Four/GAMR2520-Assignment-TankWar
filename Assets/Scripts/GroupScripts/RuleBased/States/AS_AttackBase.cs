@@ -9,6 +9,14 @@ namespace ZeroFour.RuleBased
         {
         }
 
+        public override void CollisionCallback(Collision collision)
+        {
+            if (collision.transform.CompareTag("Base"))
+            {
+                ourTank.StopTheTank();
+            }
+        }
+
         public override void StateEnter()
         {
 

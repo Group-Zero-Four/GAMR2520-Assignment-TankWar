@@ -25,6 +25,7 @@ namespace ZeroFour.RuleBased
         public override void AIOnCollisionEnter(Collision collision)
         {
             base.AIOnCollisionEnter(collision);
+            currentState?.CollisionCallback(collision);
         }
         public override void AITankStart()
         {

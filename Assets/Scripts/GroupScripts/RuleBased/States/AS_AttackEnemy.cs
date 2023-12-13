@@ -19,6 +19,7 @@ namespace ZeroFour.RuleBased
         public override void StateEnter()
         {
             Debug.Log("entering attack state");
+            
         }
 
         public override void StateExit()
@@ -29,10 +30,12 @@ namespace ZeroFour.RuleBased
         public override void StateUpdate()
         {
             GameObject closestEnemy = ourTank.GetClosestEnemy;
+            float distance = Vector3.Distance(ourTank.transform.position, closestEnemy.transform.position);
+            bool tooClose = distance < 15;
             if (closestEnemy)
             {
                 Debug.Log("Attempting to attack an enemy");
-                if (currentFireInterval > 0)
+                if (currentFireInterval > 0 || tooClose)
                 {
                     currentCircleAngle += Time.deltaTime * circleSpeed;
                     ourTank.driveTarget.transform.position = closestEnemy.transform.position +
@@ -43,11 +46,11 @@ namespace ZeroFour.RuleBased
                 }
                 else
                 {
-                    if (!ourTank.GetFiring)
+                    if (!ourTank.GetFiring && !tooClose)
                     {
                         ourTank.Fire(closestEnemy);
+                        currentFireInterval = fireInterval;
                     }
-                    currentFireInterval = fireInterval;
                 }
             }
             else
@@ -65,6 +68,10 @@ namespace ZeroFour.RuleBased
             Debug.DrawRay(ourTank.driveTarget.transform.position, Vector3.back, Color.red, 0.1f);
 
 
+        }
+
+        public override void CollisionCallback(Collision collision)
+        {
         }
     }
 }
