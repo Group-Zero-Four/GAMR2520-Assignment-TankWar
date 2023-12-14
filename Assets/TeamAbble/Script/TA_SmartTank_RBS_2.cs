@@ -79,8 +79,8 @@ namespace TeamAbble.RuleBased
         void InitRules()
         {
             ruleTypes.AddRule(new(CONSUMABLESEEN, DANGER, typeof(TA_AdvCollect), TA_RuleType.Predicate.And));
-            ruleTypes.AddRule(new(ENEMYSEEN, DANGER, typeof(TA_AdvChaseState), TA_RuleType.Predicate.OnlyFirst));
-            ruleTypes.AddRule(new(ENEMYSEEN, ENEMYTOOFAR, typeof(TA_AdvAttackEnemy), TA_RuleType.Predicate.OnlyFirst));
+            ruleTypes.AddRule(new(ENEMYSEEN, DANGER, ENEMYTOOFAR, typeof(TA_AdvAttackEnemy), TA_RuleType.Predicate.OnlyFirst));
+            ruleTypes.AddRule(new(ENEMYSEEN, ENEMYTOOFAR, typeof(TA_AdvChaseState), TA_RuleType.Predicate.And));
             ruleTypes.AddRule(new(BASELOST, DANGER, typeof(TA_AdvBaseDefence), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(BASESEEN, DANGER, typeof(TA_AdvAttackBase), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(CONSUMABLESEEN, ENEMYSEEN, BASESEEN, typeof(TA_AdvCollect), TA_RuleType.Predicate.OnlyFirst));
