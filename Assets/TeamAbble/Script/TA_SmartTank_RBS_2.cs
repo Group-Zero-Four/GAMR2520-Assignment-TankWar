@@ -11,7 +11,7 @@ namespace TeamAbble.RuleBased
         /// Determinant Fact - determined by conditions in the world.
         /// </summary>
         public const string ENEMYSEEN = "Enemy Seen", BASESEEN = "Base Seen", CONSUMABLESEEN = "Consumable Seen",
-            LOWHEALTH = "Low Health", LOWFUEL = "Low Fuel", LOWAMMO = "Low Ammo", BASELOST = "Base Lost";
+            LOWHEALTH = "Low Health", LOWFUEL = "Low Fuel", LOWAMMO = "Low Ammo", BASELOST = "Base Lost", ENEMYTOOFAR = "Enemy Too Far";
         /// <summary>
         /// Asserted Fact - determined by other facts.
         /// </summary>
@@ -66,6 +66,7 @@ namespace TeamAbble.RuleBased
             facts.Add(ENEMYSEEN, false);
             facts.Add(BASESEEN, false);
             facts.Add(CONSUMABLESEEN, false);
+            facts.Add(ENEMYTOOFAR, false);
 
             facts.Add(LOWHEALTH, false);
             facts.Add(LOWFUEL, false);
@@ -78,7 +79,8 @@ namespace TeamAbble.RuleBased
         void InitRules()
         {
             ruleTypes.AddRule(new(CONSUMABLESEEN, DANGER, typeof(TA_AdvCollect), TA_RuleType.Predicate.And));
-            ruleTypes.AddRule(new(ENEMYSEEN, DANGER, typeof(TA_AdvAttackEnemy), TA_RuleType.Predicate.OnlyFirst));
+            ruleTypes.AddRule(new(ENEMYSEEN, DANGER, typeof(TA_AdvChaseState), TA_RuleType.Predicate.OnlyFirst));
+            ruleTypes.AddRule(new(ENEMYSEEN, ENEMYTOOFAR, typeof(TA_AdvAttackEnemy), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(BASELOST, DANGER, typeof(TA_AdvBaseDefence), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(BASESEEN, DANGER, typeof(TA_AdvAttackBase), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(CONSUMABLESEEN, ENEMYSEEN, BASESEEN, typeof(TA_AdvCollect), TA_RuleType.Predicate.OnlyFirst));
@@ -86,6 +88,7 @@ namespace TeamAbble.RuleBased
         }
         void InitStateMachine()
         {
+            stateDictionary.Add(typeof(TA_AdvChaseState), new TA_AdvChaseState(this));
             stateDictionary.Add(typeof(TA_AdvAttackEnemy), new TA_AdvAttackEnemy(this));
             stateDictionary.Add(typeof(TA_AdvAttackBase), new TA_AdvAttackBase(this));
             stateDictionary.Add(typeof(TA_AdvPatrol), new TA_AdvPatrol(this));
@@ -97,6 +100,7 @@ namespace TeamAbble.RuleBased
             facts[ENEMYSEEN] = closestEnemy != null;
             facts[BASESEEN] = closestBase != null;
             facts[CONSUMABLESEEN] = closestConsumable != null;
+            facts[ENEMYTOOFAR] = closestEnemy != null && DistanceFromTank(closestEnemy) > 35;
 
             facts[BASELOST] = GetMyBases.Count < 2 && baseLostAggressionTime > 0;
 
