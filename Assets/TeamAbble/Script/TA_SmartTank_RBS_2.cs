@@ -11,7 +11,7 @@ namespace TeamAbble.RuleBased
         /// Determinant Fact - determined by conditions in the world.
         /// </summary>
         public const string ENEMYSEEN = "Enemy Seen", BASESEEN = "Base Seen", CONSUMABLESEEN = "Consumable Seen",
-            LOWHEALTH = "Low Health", LOWFUEL = "Low Fuel", LOWAMMO = "Low Ammo", BASELOST = "Base Lost", ENEMYTOOFAR = "Enemy Too Far";
+            LOWHEALTH = "Low Health", LOWFUEL = "Low Fuel", LOWAMMO = "Low Ammo", BASELOST = "Base Lost", ENEMYTOOFAR = "Enemy Too Far", RUSHING = "Rushing";
         /// <summary>
         /// Asserted Fact - determined by other facts.
         /// </summary>
@@ -63,6 +63,7 @@ namespace TeamAbble.RuleBased
 
         void InitFacts()
         {
+            facts.Add(RUSHING, true);
             facts.Add(ENEMYSEEN, false);
             facts.Add(BASESEEN, false);
             facts.Add(CONSUMABLESEEN, false);
@@ -84,16 +85,18 @@ namespace TeamAbble.RuleBased
             ruleTypes.AddRule(new(BASELOST, DANGER, typeof(TA_AdvBaseDefence), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(BASESEEN, DANGER, typeof(TA_AdvAttackBase), TA_RuleType.Predicate.OnlyFirst));
             ruleTypes.AddRule(new(CONSUMABLESEEN, ENEMYSEEN, BASESEEN, typeof(TA_AdvCollect), TA_RuleType.Predicate.OnlyFirst));
-            ruleTypes.AddRule(new(ENEMYSEEN, CONSUMABLESEEN, BASESEEN, typeof(TA_AdvPatrol), TA_RuleType.Predicate.nAnd));
+            ruleTypes.AddRule(new(ENEMYSEEN, CONSUMABLESEEN, BASESEEN, RUSHING, typeof(TA_AdvPatrol), TA_RuleType.Predicate.nAnd));
         }
         void InitStateMachine()
         {
+            stateDictionary.Add(typeof(TA_AdvRush), new TA_AdvRush(this));
             stateDictionary.Add(typeof(TA_AdvChaseState), new TA_AdvChaseState(this));
             stateDictionary.Add(typeof(TA_AdvAttackEnemy), new TA_AdvAttackEnemy(this));
             stateDictionary.Add(typeof(TA_AdvAttackBase), new TA_AdvAttackBase(this));
             stateDictionary.Add(typeof(TA_AdvPatrol), new TA_AdvPatrol(this));
             stateDictionary.Add(typeof(TA_AdvCollect), new TA_AdvCollect(this));
             stateDictionary.Add(typeof(TA_AdvBaseDefence), new TA_AdvBaseDefence(this));
+            TrySwitchState(typeof(TA_AdvRush));
         }
         void EvaluateRules()
         {
