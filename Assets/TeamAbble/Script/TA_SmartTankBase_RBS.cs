@@ -105,6 +105,11 @@ namespace TeamAbble.RuleBased
         public GameObject GetClosestEnemy { get { return FindClosest(TanksFound); } }
         public GameObject GetClosestBase { get { return FindClosest(BasesFound); } }
         public GameObject GetClosestConsumable { get { return FindClosest(ConsumablesFound); } }
+
+        public float DistanceFromTank(GameObject point)
+        {
+            return Vector3.Distance(transform.position, point.transform.position);
+        }
         #endregion Helper Methods
     }
 }
